@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dao.IGoods">
+    <!--    第一种方式查询一对多关系-->
+    <select id="selectGoodsToManny" resultType="GoodsAndClassification">
+SELECT * FROM goods g LEFT JOIN classification cf ON cf.cid = g.classification_cid
+</select>
+    <!--    第二种方式查询一对多关系-->
+    <resultMap id="ClassificationMap" type="Classification">
+        <id property="cid" column="cid"></id>
+        <result property="cname" column="cname"></result>
+        <collection property="goodsList" column="cid" javaType="java.util.List" select="selectGoodsByCid"></collection>
+    </resultMap>
+
+    <select id="selectClassificationByCid" resultMap="ClassificationMap" parameterType="Integer">
+        select * from classification where cid = #{cid}
+    </select>
+
+    <resultMap id="GoodsMap" type="Goods">
+        <id property="gid" column="gid"></id>
+        <result property="gname" column="gname"></result>
+        <result property="gprice" column="gprice"></result>
+        <result property="gstock" column="gstock"></result>
+
+    </resultMap>
+
+    <select id="selectGoodsByCid" parameterType="Integer" resultMap="GoodsMap">
+        select * from goods where classification_cid = #{cid}
+    </select>
+</mapper>

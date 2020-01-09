@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dao.SidMethodFactory">
+    <sql id="comlunValue">
+        id,name
+    </sql>
+    <sql id="selectUser">
+        select id,name from sid
+    </sql>
+    <resultMap id="user" type="User">
+        <id property="sid" column="id"></id>
+        <result property="sname" column="name"></result>
+    </resultMap>
+    <select id="selectsid" parameterType="User" resultMap="user">
+        select <include refid="comlunValue"></include> from sid
+        <if test="sid!=null and sid!=''">where id = #{sid}</if>
+    </select>
+    <select id="selectUserByUid" resultType="Users">
+        select * from users where uid = #{uid}
+    </select>
+    <select id="selectAll" resultType="pojo.Users">
+        select * from users
+    </select>
+    <!--    select * from users where urname like #{asd}-->
+    <select id="selectLike" parameterType="string" resultType="Users">
+        select * from users where urname like '%${value}%'
+    </select>
+    <!--    第一种！！拿到自增id方法 keyProperty="uid" useGeneratedKeys="true"-->
+    <insert id="insertOne" parameterType="Users" keyProperty="uid" useGeneratedKeys="true">
+        -- 第二种！！拿到自增id方法
+        <!--        <selectKey keyProperty="uid" order="AFTER" resultType="int">-->
+        <!--        select last_insert_id()-->
+        <!--        </selectKey>-->
+        INSERT INTO users(uname,urname,uphone,upassword) VALUES(#{uname},#{urname},#{uphone},#{upassword})
+    </insert>
+    <insert id="insertUUID" parameterType="User">
+        <selectKey keyProperty="id" resultType="string" order="BEFORE">
+            select UUID()
+        </selectKey>
+        insert into sid values (#{id},#{name})
+    </insert>
+    <update id="updateUser" parameterType="Users">
+        update users set uname='${uname}',upassword='${upassword}' where uid = ${uid}
+    </update>
+    <delete id="deleteByUid" parameterType="int">
+        delete from users where uid = ${value }
+    </delete>
+    <!--    复杂的sql语句-->
+    <!--   if可以灵活控制 <where>、<Set>、标签-->
+    <select id="selectByMoreUid" parameterType="java.util.List" resultMap="user">
+        <include refid="selectUser"></include>
+        <where>
+            <!--    foreach：批量执行传入参数-->
+            <!--    collection：传入的集合名如果没有对象包装，在接口出@Parame -->
+            <foreach collection="idList" open="id in(" item="id" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </select>
+    <delete id="deleteByMoreUid" parameterType="More">
+        delete from sid
+        <where>
+            <foreach collection="uid" open="id in (" item="id" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </delete>
+    <insert id="insertMoreUserToSid" parameterType="java.util.List">
+        insert into sid(<include refid="comlunValue"></include>) values
+        <foreach collection="list" item="u1" separator=",">
+            (#{u1.sid},#{u1.sname})
+        </foreach>
+
+    </insert>
+    <!--    多表联查方式一（1）新建一个实体entity囊括所有被查出的属性，结果放置到resultTpye = "囊括所有的新实体"-->
+    <resultMap id="shopCartMap" type="ShopCart">
+        <id property="cid" column="cid"></id>
+        <!--        多表联查方式一（2）使用自定义resultMap装多表查询出的属性,association关联对应关系的实体 结果使用resultMap-->
+        <!--        association property="对应关系的实体成员对象名" javaType="对应关系的实体成员对象名的路径" 如果加上 column="数据库属性" select="查询方法"可以快速配对另一个实体"-->
+        <association property="users" javaType="Users" >
+            <id property="uid" column="user_uid"></id>
+            <result property="uname" column="uname"></result>
+        </association>
+    </resultMap>
+    <select id="selectShopCartOneToOne" resultMap="shopCartMap">
+        select *from shopcart sc left join users u on sc.user_uid = u.uid
+    </select>
+</mapper>
