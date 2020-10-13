@@ -13,7 +13,7 @@
         <mybatis.version>3.5.3</mybatis.version>
         <mysql.version>8.0.12</mysql.version>
         <lombok.version>1.18.10</lombok.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <fastjson.version>1.2.62</fastjson.version>
         <jxl.version>2.6.12</jxl.version>
         <cglib.version>3.3.0</cglib.version>
