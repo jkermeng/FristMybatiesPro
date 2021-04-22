@@ -10,7 +10,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <mybatis.version>3.5.3</mybatis.version>
+        <mybatis.version>3.5.6</mybatis.version>
         <mysql.version>8.0.12</mysql.version>
         <lombok.version>1.18.10</lombok.version>
         <junit.version>4.12</junit.version>
