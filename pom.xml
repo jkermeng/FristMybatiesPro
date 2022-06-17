@@ -14,7 +14,7 @@
         <mysql.version>8.0.12</mysql.version>
         <lombok.version>1.18.10</lombok.version>
         <junit.version>4.12</junit.version>
-        <fastjson.version>1.2.62</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <jxl.version>2.6.12</jxl.version>
         <cglib.version>3.3.0</cglib.version>
         <asm.version>7.2</asm.version>
